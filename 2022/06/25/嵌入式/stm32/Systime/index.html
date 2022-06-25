@@ -22,20 +22,20 @@
     var CONFIG = {"hostname":"chaoj.com.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="按键实验">
+  <meta name="description" content="SysTick详解">
 <meta property="og:type" content="article">
-<meta property="og:title" content="按键实验">
-<meta property="og:url" content="https://chaoj.com.cn/2022/06/22/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E6%8C%89%E9%94%AE%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:title" content="SysTick">
+<meta property="og:url" content="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/Systime/index.html">
 <meta property="og:site_name" content="ChaoJ的个人博客">
-<meta property="og:description" content="按键实验">
+<meta property="og:description" content="SysTick详解">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-06-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-06-22T09:34:48.317Z">
+<meta property="article:published_time" content="2022-06-25T11:15:16.000Z">
+<meta property="article:modified_time" content="2022-06-25T11:39:15.289Z">
 <meta property="article:author" content="ChaoJ">
 <meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://chaoj.com.cn/2022/06/22/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E6%8C%89%E9%94%AE%E5%AE%9E%E9%AA%8C/">
+<link rel="canonical" href="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/Systime/">
 
 
 <script id="page-configurations">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>按键实验 | ChaoJ的个人博客</title>
+  <title>SysTick | ChaoJ的个人博客</title>
   
 
 
@@ -281,7 +281,7 @@ mjx-container[display="true"] + br {
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/06/22/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E6%8C%89%E9%94%AE%E5%AE%9E%E9%AA%8C/">
+    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/Systime/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -294,7 +294,7 @@ mjx-container[display="true"] + br {
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          按键实验
+          SysTick
         </h1>
 
         <div class="post-meta">
@@ -305,7 +305,7 @@ mjx-container[display="true"] + br {
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-06-22 00:00:00 / 修改时间：17:34:48" itemprop="dateCreated datePublished" datetime="2022-06-22T00:00:00+08:00">2022-06-22</time>
+              <time title="创建时间：2022-06-25 19:15:16 / 修改时间：19:39:15" itemprop="dateCreated datePublished" datetime="2022-06-25T19:15:16+08:00">2022-06-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -343,7 +343,7 @@ mjx-container[display="true"] + br {
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               <span>2 分钟</span>
             </span>
-            <div class="post-description">按键实验</div>
+            <div class="post-description">SysTick详解</div>
 
         </div>
       </header>
@@ -354,15 +354,24 @@ mjx-container[display="true"] + br {
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>首先在上一次创建的工程的User中创建两个文件<strong>Led_Key.h，Led_Key.c</strong>，并将这两个文件加入到工程中。</p>
-<p>分别为</p>
-<p><strong>Led_Key.h：</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __LED_KEY__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __LED_KEY__</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"stm32f10x.h"</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"main.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Led_Configration</span><span class="params">(<span class="type">void</span>)</span>;		</span><br><span class="line"><span class="type">void</span> <span class="title function_">Key_Configration</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">Key_Scanf</span><span class="params">(GPIO_TypeDef* GPIOx, <span class="type">unsigned</span> <span class="type">int</span> Pin)</span>;		<span class="comment">//检测按键，该按键为GPIOx的Pin管脚（可由原理图查看）</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>Led_Key.c：</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"Led_Key.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Led_Configration</span><span class="params">()</span></span><br><span class="line">{</span><br><span class="line">	GPIO_InitTypeDef GPIO_InitStructure;</span><br><span class="line">	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);<span class="comment">//使能时钟</span></span><br><span class="line">    </span><br><span class="line">	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;</span><br><span class="line">    </span><br><span class="line">	GPIO_Init(GPIOA, &amp;GPIO_InitStructure);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Key_Configration</span><span class="params">()</span></span><br><span class="line">{</span><br><span class="line">	<span class="comment">//由原理图可得，key0按键连接GPIOC的PIN5</span></span><br><span class="line">	GPIO_InitTypeDef GPIO_InitStructure;</span><br><span class="line">	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);</span><br><span class="line">    </span><br><span class="line">	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;		<span class="comment">//将该GPIO口调为上拉输入模式		（芯片内部有上拉电阻）</span></span><br><span class="line">	GPIO_Init(GPIOC, &amp;GPIO_InitStructure);</span><br><span class="line">	</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">Key_Scanf</span><span class="params">(GPIO_TypeDef* GPIOx, <span class="type">unsigned</span> <span class="type">int</span> Pin)</span></span><br><span class="line">{</span><br><span class="line">	<span class="keyword">if</span> (GPIO_ReadInputDataBit(GPIOx, Pin) == <span class="number">0</span>)</span><br><span class="line">	{</span><br><span class="line">		Delay(<span class="number">5000</span>);		<span class="comment">//消抖</span></span><br><span class="line">		<span class="keyword">if</span> (GPIO_ReadInputDataBit(GPIOx, Pin) == <span class="number">0</span>)</span><br><span class="line">		{</span><br><span class="line">			<span class="keyword">while</span> (GPIO_ReadInputDataBit(GPIOx, Pin) == <span class="number">0</span>);</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		}</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	}</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>main.c：</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"Led_Key.h"</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"main.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	<span class="comment">//初始化led</span></span><br><span class="line">	Led_Configration();</span><br><span class="line">	<span class="comment">//初始化key</span></span><br><span class="line">	Key_Configration();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	{</span><br><span class="line">		<span class="keyword">if</span> (Key_Scanf(GPIOC, GPIO_Pin_5) == <span class="number">0</span>)			</span><br><span class="line">			GPIOA-&gt;ODR ^= GPIO_Pin_8;	 <span class="comment">//用异或巧妙的实现led灯的状态变化</span></span><br><span class="line">        <span class="comment">//例如：1 ^ 1 = 0, 0 ^ 1 = 1</span></span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Delay</span><span class="params">(<span class="type">int</span> x)</span></span><br><span class="line">{</span><br><span class="line">	<span class="keyword">while</span> (x --);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>实验现象为：按下key0键，led0实现状态变化（亮 -&gt; 灭， 灭 -&gt; 亮）。</p>
+        <h4 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h4><p>SysTick是1个24bit递减计数器，通过对SysTick控制与状态寄存器的设置，可选择HCLK时钟(72M)或HCLK的8分频(9M，缺省是这个)作为SysTick的时钟源。</p>
+<p>主要通过配置以下四个寄存器来实现SysTick的配置：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">STK_CSR,        <span class="number">0</span>xE000E010  <span class="comment">--  控制寄存器 </span></span><br><span class="line">STK_LOAD,     <span class="number">0</span>xE000E014  <span class="comment">--  重载寄存器 </span></span><br><span class="line">STK_VAL,        <span class="number">0</span>xE000E018  <span class="comment">--  当前值寄存器 </span></span><br><span class="line">STK_CALRB,   <span class="number">0</span>xE000E01C  <span class="comment">--   校准值寄存器 </span></span><br></pre></td></tr></table></figure>
+<p>主要是前三个的配置。</p>
+<h4 id="二、寄存器介绍"><a href="#二、寄存器介绍" class="headerlink" title="二、寄存器介绍"></a>二、寄存器介绍</h4><p>主要介绍前三寄存器：</p>
+<h5 id="1-STK-CSR"><a href="#1-STK-CSR" class="headerlink" title="1. STK_CSR"></a>1. STK_CSR</h5><p>该寄存器主要配置四个位：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">第<span class="number">0</span>位：<span class="keyword">ENABLE</span>，Systick 使能位  （<span class="number">0</span>：关闭Systick功能；<span class="number">1</span>：开启Systick功能） </span><br><span class="line">第<span class="number">1</span>位：TICKINT，Systick 中断使能位    （<span class="number">0</span>：关闭Systick中断；<span class="number">1</span>：开启Systick中断） </span><br><span class="line">第<span class="number">2</span>位：CLKSOURCE，Systick时钟源选择  （<span class="number">0</span>：使用HCLK/<span class="number">8</span> 作为Systick时钟；<span class="number">1</span>：使用HCLK作为Systick时钟） </span><br><span class="line">第<span class="number">3</span>位：COUNTFLAG，Systick计数比较标志，如果在上次读取本寄存器后，SysTick 已经数到了<span class="number">0</span>，则该位为<span class="number">1</span>。如果读取该位，该位将自动清零 </span><br></pre></td></tr></table></figure>
+<h5 id="2-STK-LOAD"><a href="#2-STK-LOAD" class="headerlink" title="2. STK_LOAD"></a>2. STK_LOAD</h5><p>Systick是一个递减的定时器，当定时器递减至0时，重载寄存器中的值就会被重装载，继续开始递减。STK_LOAD 重载寄存器是个24位的寄存器最大计数0xFFFFFF。 </p>
+<h5 id="3-STK-VAL"><a href="#3-STK-VAL" class="headerlink" title="3. STK_VAL"></a>3. STK_VAL</h5><p>也是个24位的寄存器，读取时返回当前倒计数的值，写它则使之清零，同时还会清除在SysTick 控制及状态寄存器中的COUNTFLAG 标志。 </p>
+<h4 id="三、具体函数实现"><a href="#三、具体函数实现" class="headerlink" title="三、具体函数实现"></a>三、具体函数实现</h4><p>与前面相同，先在User创建两个文件<strong>bsp_SysTick.c, bsp_SysTick.h</strong>，并添加到项目文件中</p>
+<p>此时选的是<strong>HCLK时钟（72MHZ）</strong>，即 1 / 72000000 * 72()</p>
+<p><strong>bsp_SysTick.h</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __BSP_SYSTICK_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __BSP_SYSTICK_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"stm32f10x.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">unsigned</span> <span class="type">int</span> TimingDelay;		<span class="comment">//全局变量的声明</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">Delay_us</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> a)</span>;			<span class="comment">//延时aus</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SysTick_Configuration</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>bsp_SysTick.c</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"bsp_SysTick.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> TimingDelay;			<span class="comment">//用于计数的全局变量</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SysTick_Configuration</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">		<span class="keyword">while</span> (SysTick_Config(<span class="number">72</span>));			<span class="comment">//1 / 72000000 * 72秒执行一次ysTick_Handler函数。时钟初始化成功返回0</span></span><br><span class="line">		SysTick -&gt;CTRL &amp;= ~(<span class="number">1</span> &lt;&lt; <span class="number">0</span>);			<span class="comment">//配置CTRL寄存器的第0位（即使能位），作用：先关闭时钟，等用的时候再打开</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Delay_us</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> x)</span></span><br><span class="line">{</span><br><span class="line">	TimingDelay = x;</span><br><span class="line">	SysTick -&gt; CTRL |= <span class="number">1</span> &lt;&lt; <span class="number">0</span>;		<span class="comment">//开启时钟</span></span><br><span class="line">	<span class="keyword">while</span> (TimingDelay);</span><br><span class="line">	SysTick -&gt;CTRL &amp;= ~(<span class="number">1</span> &lt;&lt; <span class="number">0</span>);	</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>在<strong>stm32f10x_it.c</strong>中找到SysTick_Handler函数，当STK_LOAD减为0时， 会执行一次该函数。</p>
+<p>上述代码将STK_LOAD置为72，而STK_LOAD每1 / 72000000秒减一次，所以会经过1 / 72000000 * 72秒执行一次SysTick_Handler函数，即1us 执行一次。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">SysTick_Handler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	<span class="keyword">if</span> (TimingDelay)</span><br><span class="line">		TimingDelay --;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -398,7 +407,7 @@ mjx-container[display="true"] + br {
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://chaoj.com.cn/2022/06/22/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E6%8C%89%E9%94%AE%E5%AE%9E%E9%AA%8C/" title="按键实验">https://chaoj.com.cn/2022/06/22/嵌入式/stm32/按键实验/</a>
+    <a href="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/Systime/" title="SysTick">https://chaoj.com.cn/2022/06/25/嵌入式/stm32/Systime/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -418,13 +427,10 @@ mjx-container[display="true"] + br {
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/06/21/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E6%96%B0%E5%BB%BA%E5%B7%A5%E7%A8%8B%E5%8F%8A%E5%90%84%E7%9B%AE%E5%BD%95%E6%96%87%E4%BB%B6/" rel="prev" title="新建工程及各目录文件">
-      <i class="fa fa-chevron-left"></i> 新建工程及各目录文件
+    <a href="/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" rel="prev" title="外部中断">
+      <i class="fa fa-chevron-left"></i> 外部中断
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" rel="next" title="外部中断">
-      外部中断 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -487,6 +493,7 @@ mjx-container[display="true"] + br {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AF%84%E5%AD%98%E5%99%A8%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">二、寄存器介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-STK-CSR"><span class="nav-number">2.1.</span> <span class="nav-text">1. STK_CSR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-STK-LOAD"><span class="nav-number">2.2.</span> <span class="nav-text">2. STK_LOAD</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-STK-VAL"><span class="nav-number">2.3.</span> <span class="nav-text">3. STK_VAL</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%85%B7%E4%BD%93%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">三、具体函数实现</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
