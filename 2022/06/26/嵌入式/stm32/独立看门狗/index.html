@@ -22,25 +22,26 @@
     var CONFIG = {"hostname":"chaoj.com.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="外部中断详解">
+  <meta name="description" content="IWDG详解">
 <meta property="og:type" content="article">
-<meta property="og:title" content="外部中断">
-<meta property="og:url" content="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/index.html">
+<meta property="og:title" content="独立看门狗IWDG">
+<meta property="og:url" content="https://chaoj.com.cn/2022/06/26/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97/index.html">
 <meta property="og:site_name" content="ChaoJ的个人博客">
-<meta property="og:description" content="外部中断详解">
+<meta property="og:description" content="IWDG详解">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://pic2.zhimg.com/80/v2-5962abd938b1af7b5122a14d88837d31_1440w.png">
-<meta property="og:image" content="https://pic2.zhimg.com/80/v2-070f4590962d44a93123f55589419f23_1440w.png">
-<meta property="og:image" content="https://pic2.zhimg.com/80/v2-e673b19e247032c0e9e5720ab8bd5f09_1440w.png">
-<meta property="og:image" content="https://pic1.zhimg.com/80/v2-ffe429e023bd4c4fff4d781a86f2d3d8_1440w.png">
-<meta property="article:published_time" content="2022-06-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-06-25T03:34:08.701Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/0e05b1eb3b1a9a13e6c45d091696a5aa.png">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-9f47c960248b6faae177569de8c8721b_1440w.png">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-63e0140719014e2815a51efdaadc1a1a_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-9ef58fc13d917451a5b3cea3f47aa4f8_1440w.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-553ea53b33770dd7ee3f55e9b73aa32b_1440w.png">
+<meta property="article:published_time" content="2022-06-26T11:15:16.000Z">
+<meta property="article:modified_time" content="2022-06-26T14:21:03.847Z">
 <meta property="article:author" content="ChaoJ">
 <meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://pic2.zhimg.com/80/v2-5962abd938b1af7b5122a14d88837d31_1440w.png">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/0e05b1eb3b1a9a13e6c45d091696a5aa.png">
 
-<link rel="canonical" href="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/">
+<link rel="canonical" href="https://chaoj.com.cn/2022/06/26/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97/">
 
 
 <script id="page-configurations">
@@ -53,7 +54,7 @@
   };
 </script>
 
-  <title>外部中断 | ChaoJ的个人博客</title>
+  <title>独立看门狗IWDG | ChaoJ的个人博客</title>
   
 
 
@@ -286,7 +287,7 @@ mjx-container[display="true"] + br {
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/">
+    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/06/26/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -299,7 +300,7 @@ mjx-container[display="true"] + br {
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          外部中断
+          独立看门狗IWDG
         </h1>
 
         <div class="post-meta">
@@ -310,7 +311,7 @@ mjx-container[display="true"] + br {
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-06-25 00:00:00 / 修改时间：11:34:08" itemprop="dateCreated datePublished" datetime="2022-06-25T00:00:00+08:00">2022-06-25</time>
+              <time title="创建时间：2022-06-26 19:15:16 / 修改时间：22:21:03" itemprop="dateCreated datePublished" datetime="2022-06-26T19:15:16+08:00">2022-06-26</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -339,7 +340,7 @@ mjx-container[display="true"] + br {
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.1k</span>
+              <span>1.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -348,7 +349,7 @@ mjx-container[display="true"] + br {
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               <span>2 分钟</span>
             </span>
-            <div class="post-description">外部中断详解</div>
+            <div class="post-description">IWDG详解</div>
 
         </div>
       </header>
@@ -359,38 +360,35 @@ mjx-container[display="true"] + br {
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="一、外部中断是什么？"><a href="#一、外部中断是什么？" class="headerlink" title="一、外部中断是什么？"></a>一、外部中断是什么？</h4><p>举个简单的例子，当我们在学习时，突然来了一个电话，这时我们就会放下手中的学习去接电话，当电话接完时，我们就会继续学习。电话就相当于外部中断，中断手中正在做的事（主任务）去处理紧急任务。</p>
-<h4 id="二、STM32的外部中断"><a href="#二、STM32的外部中断" class="headerlink" title="二、STM32的外部中断"></a>二、STM32的外部中断</h4><h5 id="1-STM32外部中断线"><a href="#1-STM32外部中断线" class="headerlink" title="1. STM32外部中断线"></a>1. STM32外部中断线</h5><ul>
-<li><p>STM32每个IO口均可作为外部中断</p>
-</li>
-<li><p>STM32中断控制器支持19个外部中断/事件请求：</p>
-<p>线0~15：外部中断</p>
-<p>线16：连接到PVD输出</p>
-<p>线17：连接到RTC闹钟事件</p>
-<p>线18：连接到USB唤醒事件</p>
-<p>每个外部中断线可以独立的配置触发方式（上升沿，下降沿或者双边沿触发），触发/屏蔽，专用的状态位。</p>
-</li>
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>stm32中共有两个看门狗，分别为独立看门狗（IWDG）, 窗口看门狗（WWDG）。它们的作用就是在程序由于电磁干扰等因素跑飞时来进行系统复位。本文介绍独立看门狗（IWDG）。</p>
+<h4 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h4><p>独立看门狗通俗一点解释就是一个有12位的递减计数器，当该计数器从某一个值减为0时，系统就会产生一个复位信号IWDG_RESET。若在计数器还未减为0时重新给计数器赋一个值，就不会产生复位信号，该操作俗称<strong>喂狗</strong>。</p>
+<h4 id="二、-寄存器介绍"><a href="#二、-寄存器介绍" class="headerlink" title="二、 寄存器介绍"></a>二、 寄存器介绍</h4><p><img src="https://img-blog.csdnimg.cn/img_convert/0e05b1eb3b1a9a13e6c45d091696a5aa.png" alt=""></p>
+<p><strong>（1）预分频寄存器</strong></p>
+<p><img src="https://pic3.zhimg.com/80/v2-9f47c960248b6faae177569de8c8721b_1440w.png" alt=""></p>
+<p>该寄存器只有低三位可以读写，低三位可设置预分频因子。独立看门狗在低时钟线（40KHZ）上，所以即使主时钟不工作了，独立看门狗依然工作，这就是为什么叫独立。不同的预分频因子可将40KHZ分频。</p>
+<p><strong>（2）键寄存器(IWDG_KR)</strong> </p>
+<p><img src="https://pic2.zhimg.com/80/v2-63e0140719014e2815a51efdaadc1a1a_1440w.png" alt=""></p>
+<p>该寄存器16位可写，分别可写<strong>0xAAAA, 0x5555, 0xCCCC</strong>,对应作用如上图所示即：</p>
+<ul>
+<li><strong>0xAAAA：</strong> 重置计数器的值</li>
+<li><strong>0x5555：</strong>可以操作IWDG_PR和IWDG_RLR寄存器</li>
+<li><strong>0xCCCC：</strong>启动看门狗，即计数器开始递减</li>
 </ul>
-<h5 id="2-STM32外部中断线与IO口对应关系"><a href="#2-STM32外部中断线与IO口对应关系" class="headerlink" title="2. STM32外部中断线与IO口对应关系"></a>2. STM32外部中断线与IO口对应关系</h5><p>16条外部中断与个IO口的对应关系如图所示：</p>
-<p>​    <img src="https://pic2.zhimg.com/80/v2-5962abd938b1af7b5122a14d88837d31_1440w.png" alt=""></p>
-<p> 对于每个中断线，我们可以设置相应的触发方式（上升沿触发，下降沿触发，边沿触发）以及使能。</p>
-<h5 id="3-中断向量与服务函数"><a href="#3-中断向量与服务函数" class="headerlink" title="3.中断向量与服务函数"></a>3.中断向量与服务函数</h5><p>对于每个中断线，都有对应的服务函数（即触发外部中断时，跳转到该函数中），对应关系如下：</p>
-<p>0~4外部中断关系：</p>
-<p><img src="https://pic2.zhimg.com/80/v2-070f4590962d44a93123f55589419f23_1440w.png" alt=""></p>
-<p>5 ~ 9:</p>
-<p><img src="https://pic2.zhimg.com/80/v2-e673b19e247032c0e9e5720ab8bd5f09_1440w.png" alt=""></p>
-<p>0 ~ 15:</p>
-<p><img src="https://pic1.zhimg.com/80/v2-ffe429e023bd4c4fff4d781a86f2d3d8_1440w.png" alt=""></p>
-<p>在STM32的启动文件（<strong>startup_stm32f10x_md.s</strong>）中有如下代码，对应着述介绍。</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">DCD</span>     EXTI0_IRQHandler           <span class="comment">; EXTI Line 0</span></span><br><span class="line"><span class="symbol">DCD</span>     EXTI1_IRQHandler           <span class="comment">; EXTI Line 1</span></span><br><span class="line"><span class="symbol">DCD</span>     EXTI2_IRQHandler           <span class="comment">; EXTI Line 2</span></span><br><span class="line"><span class="symbol">DCD</span>     EXTI3_IRQHandler           <span class="comment">; EXTI Line 3</span></span><br><span class="line"><span class="symbol">DCD</span>     EXTI4_IRQHandler           <span class="comment">; EXTI Line 4</span></span><br><span class="line"><span class="symbol">DCD</span>     EXTI9_5_IRQHandler         <span class="comment">; EXTI Line 9..5</span></span><br><span class="line"><span class="symbol">DCD</span>     EXTI15_10_IRQHandler       <span class="comment">; EXTI Line 15..10</span></span><br></pre></td></tr></table></figure>
-<h4 id="三、STM32外部中断库函数配置"><a href="#三、STM32外部中断库函数配置" class="headerlink" title="三、STM32外部中断库函数配置"></a>三、STM32外部中断库函数配置</h4><h5 id="1-初始化NVIC"><a href="#1-初始化NVIC" class="headerlink" title="1. 初始化NVIC"></a>1. 初始化NVIC</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NVIC_InitTypeDef NVIC_InitStructure;</span><br><span class="line"><span class="comment">//初始化向量中断控制器</span></span><br><span class="line">NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);</span><br><span class="line">NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;</span><br><span class="line">NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = <span class="number">0</span>;</span><br><span class="line">NVIC_InitStructure.NVIC_IRQChannelSubPriority = <span class="number">2</span>;</span><br><span class="line">NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;</span><br><span class="line">NVIC_Init(&amp;NVIC_InitStructure);</span><br></pre></td></tr></table></figure>
-<h5 id="2-初始化GPIO"><a href="#2-初始化GPIO" class="headerlink" title="2. 初始化GPIO"></a>2. 初始化GPIO</h5><p>这里以GPIOC_Pin5为例</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化GPIOC_Pin5</span></span><br><span class="line">	GPIO_InitTypeDef GPIO_InitStructure;</span><br><span class="line">	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);<span class="comment">//使能为GPIOC时钟与功能复用时钟</span></span><br><span class="line">	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;		<span class="comment">//将该GPIO口调为上拉输入模式（芯片内部有上拉电阻）</span></span><br><span class="line">	GPIO_Init(GPIOC, &amp;GPIO_InitStructure);</span><br><span class="line">	GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, GPIO_PinSource5);		<span class="comment">//选择 GPIO 管脚用作外部中断线路</span></span><br></pre></td></tr></table></figure>
-<h5 id="3-初始化外部中断"><a href="#3-初始化外部中断" class="headerlink" title="3. 初始化外部中断"></a>3. 初始化外部中断</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">EXTI_InitTypeDef  EXTI_InitStructure;</span><br><span class="line">EXTI_InitStructure.EXTI_Line = EXTI_Line5; </span><br><span class="line">EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	<span class="comment">//模式设置为中断请求，（另一个为事件请求，这里不作介绍）</span></span><br><span class="line">EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; <span class="comment">//设置为下降沿触发</span></span><br><span class="line">EXTI_InitStructure.EXTI_LineCmd = ENABLE; </span><br><span class="line">EXTI_Init(&amp;EXTI_InitStructure);</span><br></pre></td></tr></table></figure>
-<p>经过以上三步就可将GPIOC_Pin5配置为外部中断。</p>
-<p>其中的服务函数为：<strong>void EXTI9_5_IRQHandler(void)</strong></p>
-<p>在该函数中可写入如下代码完成如按键实验一样的功能</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">EXTI9_5_IRQHandler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	<span class="keyword">if</span> (EXTI_GetITStatus(EXTI_Line5) != RESET)			<span class="comment">//检查指定的 EXTI 线路触发请求发生与否</span></span><br><span class="line">	{</span><br><span class="line">			GPIOA-&gt;ODR ^= GPIO_Pin_8;	</span><br><span class="line">			EXTI_ClearITPendingBit(EXTI_Line5);		<span class="comment">//清除 EXTI 线路挂起位,否则会一直执行中断函数</span></span><br><span class="line">	}</span><br><span class="line">		</span><br><span class="line">}	</span><br></pre></td></tr></table></figure>
+<p><strong>（3）重装载寄存器(IWDG_RLR)</strong> </p>
+<p><img src="https://pica.zhimg.com/80/v2-9ef58fc13d917451a5b3cea3f47aa4f8_1440w.png" alt=""></p>
+<p>该寄存器为12位寄存器， 该寄存器的值为计数器开始递减的值。</p>
+<p><strong>（4）状态寄存器(IWDG_SR)</strong></p>
+<p><img src="https://pic4.zhimg.com/80/v2-553ea53b33770dd7ee3f55e9b73aa32b_1440w.png" alt=""></p>
+<p>该寄存器只支持读。</p>
+<h4 id="三、初始化"><a href="#三、初始化" class="headerlink" title="三、初始化"></a>三、初始化</h4><p>在工程文件的User中添加<strong>bsp_iwdg.c，bsp_iwdg.h</strong>文件：</p>
+<p>bsp_iwdg.h：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __BSP_IWDG_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __BSP_IWDG_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"stm32f10x.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">IWDG_Configuration</span><span class="params">(<span class="type">void</span>)</span>;		<span class="comment">//初始化</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">IWDG_FeedDog</span><span class="params">(<span class="type">void</span>)</span>;					<span class="comment">//喂狗操作</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>bsp_iwdg.c：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"bsp_iwdg.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//这里设置如果不喂狗，每1s一次复位</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">IWDG_Configuration</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);		<span class="comment">//使能对寄存器 IWDG_PR 和 IWDG_RLR 的写操作</span></span><br><span class="line">	IWDG_SetPrescaler(IWDG_Prescaler_16);			<span class="comment">//设置 IWDG 预分频值为 16</span></span><br><span class="line">	IWDG_SetReload(<span class="number">625</span>);		<span class="comment">//设置 IWDG 重装载值</span></span><br><span class="line">	IWDG_ReloadCounter();		<span class="comment">//按照 IWDG 重装载寄存器的值重装载 IWDG 计数器</span></span><br><span class="line">	IWDG_Enable();			<span class="comment">//使能IWDG</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">IWDG_FeedDog</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	IWDG_ReloadCounter();	</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>main.c:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"bsp_exti.h"</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"main.h"</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"Led_Key.h"</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"bsp_SysTick.h"</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"bsp_iwdg.h"</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	<span class="comment">//初始化led</span></span><br><span class="line">	Led_Configration();</span><br><span class="line">	Key_Configration();</span><br><span class="line">	SysTick_Configuration();</span><br><span class="line">	IWDG_Configuration();</span><br><span class="line">	GPIOA-&gt;ODR ^= GPIO_Pin_8;</span><br><span class="line">	Delay_us(<span class="number">100000</span>);</span><br><span class="line">	GPIOA-&gt;ODR ^= GPIO_Pin_8;</span><br><span class="line">	Delay_us(<span class="number">100000</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	{</span><br><span class="line">		<span class="keyword">if</span> (Key_Scanf(GPIOC, GPIO_Pin_5) == <span class="number">0</span>)</span><br><span class="line">		{</span><br><span class="line">			IWDG_FeedDog();				<span class="comment">//喂狗，防止复位</span></span><br><span class="line">			Delay_us(<span class="number">1000</span>);</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h4 id="四、-实验现象"><a href="#四、-实验现象" class="headerlink" title="四、 实验现象"></a>四、 实验现象</h4><p>LED0不停亮灭。原因：系统不停复位。</p>
+<p>当以一定的频率按动KEY0时， LED0一直亮。原因：一直进行喂狗操作，系统一直执行且未复位。</p>
 
     </div>
 
@@ -426,7 +424,7 @@ mjx-container[display="true"] + br {
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://chaoj.com.cn/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" title="外部中断">https://chaoj.com.cn/2022/06/25/嵌入式/stm32/外部中断/</a>
+    <a href="https://chaoj.com.cn/2022/06/26/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97/" title="独立看门狗IWDG">https://chaoj.com.cn/2022/06/26/嵌入式/stm32/独立看门狗/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -446,13 +444,10 @@ mjx-container[display="true"] + br {
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/06/22/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E6%8C%89%E9%94%AE%E5%AE%9E%E9%AA%8C/" rel="prev" title="按键实验">
-      <i class="fa fa-chevron-left"></i> 按键实验
+    <a href="/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/Systime/" rel="prev" title="SysTick">
+      <i class="fa fa-chevron-left"></i> SysTick
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/06/25/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/Systime/" rel="next" title="SysTick">
-      SysTick <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -515,7 +510,7 @@ mjx-container[display="true"] + br {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">一、外部中断是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81STM32%E7%9A%84%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD"><span class="nav-number">2.</span> <span class="nav-text">二、STM32的外部中断</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-STM32%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD%E7%BA%BF"><span class="nav-number">2.1.</span> <span class="nav-text">1. STM32外部中断线</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-STM32%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD%E7%BA%BF%E4%B8%8EIO%E5%8F%A3%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="nav-number">2.2.</span> <span class="nav-text">2. STM32外部中断线与IO口对应关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E4%B8%AD%E6%96%AD%E5%90%91%E9%87%8F%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%87%BD%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">3.中断向量与服务函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81STM32%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD%E5%BA%93%E5%87%BD%E6%95%B0%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">三、STM32外部中断库函数配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96NVIC"><span class="nav-number">3.1.</span> <span class="nav-text">1. 初始化NVIC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%9D%E5%A7%8B%E5%8C%96GPIO"><span class="nav-number">3.2.</span> <span class="nav-text">2. 初始化GPIO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD"><span class="nav-number">3.3.</span> <span class="nav-text">3. 初始化外部中断</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">一、简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E5%AF%84%E5%AD%98%E5%99%A8%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.</span> <span class="nav-text">二、 寄存器介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">三、初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81-%E5%AE%9E%E9%AA%8C%E7%8E%B0%E8%B1%A1"><span class="nav-number">5.</span> <span class="nav-text">四、 实验现象</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
