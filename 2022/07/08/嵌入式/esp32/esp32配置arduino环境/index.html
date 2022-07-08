@@ -22,19 +22,30 @@
     var CONFIG = {"hostname":"chaoj.com.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+  <meta name="description" content="esp32-arduino环境配置">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://chaoj.com.cn/2022/04/04/hello-world/index.html">
+<meta property="og:title" content="esp32-arduino环境配置">
+<meta property="og:url" content="https://chaoj.com.cn/2022/07/08/%E5%B5%8C%E5%85%A5%E5%BC%8F/esp32/esp32%E9%85%8D%E7%BD%AEarduino%E7%8E%AF%E5%A2%83/index.html">
 <meta property="og:site_name" content="ChaoJ的个人博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="esp32-arduino环境配置">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-04T11:53:53.607Z">
-<meta property="article:modified_time" content="2022-04-04T11:53:53.607Z">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-52b151ba229c9eac7dbd106320fb0ac0_1440w.png">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-19a5bd26752afe3c4bbc7ef04ee4fe85_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-941412f0c10fa9056677298840537bbc_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-0d7fc51d15cb06b41fe80c8568d3d9ca_1440w.png">
+<meta property="og:image" content="https://picx.zhimg.com/80/v2-b87500b55501d67428c4d6a73037315e_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-941412f0c10fa9056677298840537bbc_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-afbb8af2dbcc1bc6086dbd90ab9d833e_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-99d892493d886733781927014b73e9b8_1440w.png">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-69be948c3db8188f84b7ea44157b4162_1440w.png">
+<meta property="article:published_time" content="2022-07-08T10:15:16.000Z">
+<meta property="article:modified_time" content="2022-07-08T11:00:12.091Z">
 <meta property="article:author" content="ChaoJ">
+<meta property="article:tag" content="esp32">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic4.zhimg.com/80/v2-52b151ba229c9eac7dbd106320fb0ac0_1440w.png">
 
-<link rel="canonical" href="https://chaoj.com.cn/2022/04/04/hello-world/">
+<link rel="canonical" href="https://chaoj.com.cn/2022/07/08/%E5%B5%8C%E5%85%A5%E5%BC%8F/esp32/esp32%E9%85%8D%E7%BD%AEarduino%E7%8E%AF%E5%A2%83/">
 
 
 <script id="page-configurations">
@@ -47,7 +58,7 @@
   };
 </script>
 
-  <title>Hello World | ChaoJ的个人博客</title>
+  <title>esp32-arduino环境配置 | ChaoJ的个人博客</title>
   
 
 
@@ -78,7 +89,119 @@
   </style>
 </noscript>
 
-</head>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -168,7 +291,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/04/04/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/07/08/%E5%B5%8C%E5%85%A5%E5%BC%8F/esp32/esp32%E9%85%8D%E7%BD%AEarduino%E7%8E%AF%E5%A2%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -181,7 +304,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hello World
+          esp32-arduino环境配置
         </h1>
 
         <div class="post-meta">
@@ -190,8 +313,22 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-04-04 19:53:53" itemprop="dateCreated datePublished" datetime="2022-04-04T19:53:53+08:00">2022-04-04</time>
+              <time title="创建时间：2022-07-08 18:15:16 / 修改时间：19:00:12" itemprop="dateCreated datePublished" datetime="2022-07-08T18:15:16+08:00">2022-07-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">嵌入式</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/esp32/" itemprop="url" rel="index"><span itemprop="name">esp32</span></a>
+                </span>
             </span>
 
           
@@ -207,7 +344,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>367</span>
+              <span>556</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -216,6 +353,7 @@
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               <span>1 分钟</span>
             </span>
+            <div class="post-description">esp32-arduino环境配置</div>
 
         </div>
       </header>
@@ -226,15 +364,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>一直想玩一下esp32，但一直没时间。遂暑假期间决定买一块esp32玩一下。我打算用arduinoIDE来开发，但。。。配环境这步就让我大费周章（主要是网上好多教程有问题。。）。但经过不懈努力终于配置成功。</p>
+<h4 id="第一步、安装arduino"><a href="#第一步、安装arduino" class="headerlink" title="第一步、安装arduino"></a>第一步、安装arduino</h4><p>这一步直接去官网下载—-&gt;&gt;<a target="_blank" rel="noopener" href="https://www.arduino.cc/en/software。">https://www.arduino.cc/en/software。</a></p>
+<h4 id="第二步、相关文件下载（成败在此一举）"><a href="#第二步、相关文件下载（成败在此一举）" class="headerlink" title="第二步、相关文件下载（成败在此一举）"></a>第二步、相关文件下载（成败在此一举）</h4><h5 id="1、arduino-esp32-master"><a href="#1、arduino-esp32-master" class="headerlink" title="1、arduino-esp32-master"></a>1、arduino-esp32-master</h5><p>该文件夹可以访问<a target="_blank" rel="noopener" href="https://github.com/espressif/arduino-esp32">espressif的github</a>获得。进入后点击右<strong>Code</strong></p>
+<p>进入后如下图所示</p>
+<p><img src="https://pic4.zhimg.com/80/v2-52b151ba229c9eac7dbd106320fb0ac0_1440w.png" alt=""></p>
+<p>点击Download ZIP下载。但由于要翻墙，故难以下载成功。当然，科学上网也可以。</p>
+<p>这里推荐一个网站可以解决下载问题。<a target="_blank" rel="noopener" href="https://d.serctl.com/">点击</a></p>
+<p><img src="https://pic2.zhimg.com/80/v2-19a5bd26752afe3c4bbc7ef04ee4fe85_1440w.png" alt=""></p>
+<p>下载后得到一个压缩包，解压后进入文件夹如图所示</p>
+<p><img src="https://pica.zhimg.com/80/v2-941412f0c10fa9056677298840537bbc_1440w.png" alt=""></p>
+<p>点击<strong>tools</strong>进入，此时只有<strong>两个文件夹。</strong></p>
+<p><img src="https://pica.zhimg.com/80/v2-0d7fc51d15cb06b41fe80c8568d3d9ca_1440w.png" alt=""></p>
+<p><strong>下图是配置好后的文件夹</strong></p>
+<p><img src="https://picx.zhimg.com/80/v2-b87500b55501d67428c4d6a73037315e_1440w.png" alt=""></p>
+<p>故我们要下载缺的文件。</p>
+<p>返回上一级文件夹</p>
+<p><img src="https://pica.zhimg.com/80/v2-941412f0c10fa9056677298840537bbc_1440w.png" alt=""></p>
+<p>点击package</p>
+<p><img src="https://pica.zhimg.com/80/v2-afbb8af2dbcc1bc6086dbd90ab9d833e_1440w.png" alt=""></p>
+<p>打开该文件，找到所有<strong>i686-mingw32</strong>, 将每个<strong>i686-mingw32</strong>下面的url链接（注：<strong>是双引号里面的链接不包含双引号</strong>）复制到推荐的<a target="_blank" rel="noopener" href="https://d.serctl.com/">网站</a>中下载。</p>
+<p><img src="https://pica.zhimg.com/80/v2-99d892493d886733781927014b73e9b8_1440w.png" alt=""></p>
+<p>下载完成后解压到tools中即可。如图</p>
+<p><img src="https://pic1.zhimg.com/80/v2-69be948c3db8188f84b7ea44157b4162_1440w.png" alt=""></p>
+<p>进入arduinoIDE选择选择对应的开发板，操作步骤与arduino一样。</p>
+<p>然后就可以打开arduino愉快地玩耍了。</p>
 
     </div>
 
@@ -270,7 +424,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://chaoj.com.cn/2022/04/04/hello-world/" title="Hello World">https://chaoj.com.cn/2022/04/04/hello-world/</a>
+    <a href="https://chaoj.com.cn/2022/07/08/%E5%B5%8C%E5%85%A5%E5%BC%8F/esp32/esp32%E9%85%8D%E7%BD%AEarduino%E7%8E%AF%E5%A2%83/" title="esp32-arduino环境配置">https://chaoj.com.cn/2022/07/08/嵌入式/esp32/esp32配置arduino环境/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -280,17 +434,20 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/esp32/" rel="tag"># esp32</a>
+          </div>
 
         
 
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2022/05/02/first/" rel="next" title="Myfirst article">
-      Myfirst article <i class="fa fa-chevron-right"></i>
+    <a href="/2022/07/01/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/%E7%AA%97%E5%8F%A3%E7%9C%8B%E9%97%A8%E7%8B%97/" rel="prev" title="窗口看门狗WWDG">
+      <i class="fa fa-chevron-left"></i> 窗口看门狗WWDG
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -353,7 +510,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E3%80%81%E5%AE%89%E8%A3%85arduino"><span class="nav-number">2.</span> <span class="nav-text">第一步、安装arduino</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E3%80%81%E7%9B%B8%E5%85%B3%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%EF%BC%88%E6%88%90%E8%B4%A5%E5%9C%A8%E6%AD%A4%E4%B8%80%E4%B8%BE%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">第二步、相关文件下载（成败在此一举）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1%E3%80%81arduino-esp32-master"><span class="nav-number">3.1.</span> <span class="nav-text">1、arduino-esp32-master</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -536,6 +693,61 @@ $(document).ready(function() {
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
