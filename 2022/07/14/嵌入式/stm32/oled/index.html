@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-loading-bar.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"chaoj.com.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="OLED详解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OLED详解">
+<meta property="og:url" content="https://chaoj.com.cn/2022/07/14/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/oled/index.html">
+<meta property="og:site_name" content="ChaoJ的个人博客">
+<meta property="og:description" content="OLED详解">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-ec6aab7534735c47dcbeeebaa79e2b7f_1440w.jpeg">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-4ad318d2580f5c1484994624991848b1_1440w.jpeg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-5a1dfe0e7a18f39d1d7766cce108d705_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-87fb9f1e0e4c0ea9a918d430e4066c8d_1440w.png">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-1eb5d86904def1b4423af06ff2840fff_1440w.png">
+<meta property="article:published_time" content="2022-07-14T08:15:16.000Z">
+<meta property="article:modified_time" content="2022-07-14T09:57:32.162Z">
+<meta property="article:author" content="ChaoJ">
+<meta property="article:tag" content="stm32">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic2.zhimg.com/80/v2-ec6aab7534735c47dcbeeebaa79e2b7f_1440w.jpeg">
+
+<link rel="canonical" href="https://chaoj.com.cn/2022/07/14/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/oled/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>OLED详解 | ChaoJ的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">ChaoJ的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description"> </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/07/14/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/oled/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="ChaoJ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaoJ的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OLED详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-07-14 16:15:16 / 修改时间：17:57:32" itemprop="dateCreated datePublished" datetime="2022-07-14T16:15:16+08:00">2022-07-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">嵌入式</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+            <div class="post-description">OLED详解</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="一、OLED简介"><a href="#一、OLED简介" class="headerlink" title="一、OLED简介"></a>一、OLED简介</h4><p>​    OLED，即有机发光二极管（Organic Light-Emitting Diode），又称为有机电激光显示（Organic Electroluminesence Display， OELD）。OLED由于同时具备自发光，不需背光源、对比度高、厚度薄、视角广、反应速度快、可用于挠曲性面板、使用温度范围广、构造及制程较简单等优异之特性，被认为是下一代的平面显示器新兴应用技术。</p>
+<p>OLED显示技术具有自发光的特性，采用非常薄的有机材料涂层和玻璃基板，当有电流通过时，这些有机材料就会发光，而且OLED显示屏幕可视角度大，并且能够节省电能，从2003年开始这种显示设备在MP3播放器上得到了应用。</p>
+<p>LCD都需要背光，而OLED不需要，因为它是自发光的。这样同样的显示，OLED效果要来得好一些。以目前的技术，OLED的尺寸还难以大型化，但是分辨率确可以做到很高。</p>
+<h4 id="二、0-96寸OLED屏幕介绍"><a href="#二、0-96寸OLED屏幕介绍" class="headerlink" title="二、0.96寸OLED屏幕介绍"></a>二、0.96寸OLED屏幕介绍</h4><h5 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h5><p>该模块使用的是ssd1306芯片。</p>
+<p>该模块有4针与7针接口，我这里选用<strong>7针</strong>，<strong>spi接口</strong>来介绍。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-ec6aab7534735c47dcbeeebaa79e2b7f_1440w.jpeg" alt=""></p>
+<p><img src="https://pica.zhimg.com/80/v2-4ad318d2580f5c1484994624991848b1_1440w.jpeg" alt=""></p>
+<h5 id="2-管脚定义"><a href="#2-管脚定义" class="headerlink" title="2.管脚定义"></a>2.管脚定义</h5><p>1.GND=电源地 </p>
+<p>2.VCC=2.8-5.5V </p>
+<p>3.D0=时钟引脚</p>
+<p> 4.D1=数据引脚</p>
+<p> 5.RES=复位引脚</p>
+<p> 6.DC=数据/命令 </p>
+<p>7.CS=片选</p>
+<h5 id="3-屏幕原理介绍"><a href="#3-屏幕原理介绍" class="headerlink" title="3.屏幕原理介绍"></a>3.屏幕原理介绍</h5><p>​    该屏幕参数为<strong>128*64</strong>即横行有<strong>128</strong>个像素点，纵行有<strong>64</strong>个像素点。其中纵向每<strong>8</strong>个像素点称为一页，我们访问RAM时，是以<strong>页为单位</strong>访问。</p>
+<h6 id="重要函数介绍"><a href="#重要函数介绍" class="headerlink" title="重要函数介绍"></a>重要函数介绍</h6><ul>
+<li><p>OLED_WR_Byte</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//dat:要写入的数据/命令</span></span><br><span class="line"><span class="comment">//cmd：0表示命令，1表示数据</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_WR_Byte</span><span class="params">(<span class="type">unsigned</span> <span class="type">char</span> dat, <span class="type">unsigned</span> <span class="type">int</span> cmd)</span></span><br><span class="line">{</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> i;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(cmd)						<span class="comment">//判断是数据还是命令，1为数据，0为命令</span></span><br><span class="line">		OLED_DC_Set();</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		OLED_DC_Clr();</span><br><span class="line">	</span><br><span class="line">	OLED_CS_Clr();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++)	<span class="comment">//由芯片手册18页可得，数据在时钟上升沿被写入											 //先写高位</span></span><br><span class="line">	{</span><br><span class="line">		OLED_SCLK_Clr();</span><br><span class="line">		<span class="keyword">if</span>(dat &amp; <span class="number">0x80</span>)</span><br><span class="line">			OLED_SDIN_Set();</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			OLED_SDIN_Clr();</span><br><span class="line">		OLED_SCLK_Set();</span><br><span class="line">		dat &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">	}</span><br><span class="line">	</span><br><span class="line">	OLED_CS_Set();</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li>屏幕清除函数</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">OLED_Clear</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> i, j;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++)</span><br><span class="line">	{</span><br><span class="line">        <span class="comment">//清除屏幕</span></span><br><span class="line">		OLED_WR_Byte(<span class="number">0xb0</span> + i, OLED_CMD);  <span class="comment">//由芯片手册31页可得屏幕页的起始地址为0xb0</span></span><br><span class="line">		OLED_WR_Byte(<span class="number">0x00</span>, OLED_CMD);      <span class="comment">//列的低位地址</span></span><br><span class="line">		OLED_WR_Byte(<span class="number">0x10</span>, OLED_CMD);		<span class="comment">//列的高位地址</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//清零</span></span><br><span class="line">		<span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; <span class="number">128</span>; j++)			</span><br><span class="line">			OLED_WR_Byte(<span class="number">0x0</span>, OLED_DATA);</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>​    列<img src="https://pic2.zhimg.com/80/v2-5a1dfe0e7a18f39d1d7766cce108d705_1440w.png" alt=""></p>
+<p>页</p>
+<p><img src="https://pica.zhimg.com/80/v2-87fb9f1e0e4c0ea9a918d430e4066c8d_1440w.png" alt=""></p>
+<ul>
+<li>屏幕位置设置函数</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//x:表示的列，分为（列低地址和列高地址）， y:表示的是page页编号(0~7)</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_Set_Pos</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> x, <span class="type">unsigned</span> <span class="type">int</span> y)</span></span><br><span class="line">{</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xb0</span> + y, OLED_CMD);</span><br><span class="line">	</span><br><span class="line">	OLED_WR_Byte((x&amp;<span class="number">0x0F</span>), OLED_CMD);		</span><br><span class="line">	OLED_WR_Byte((x&amp;<span class="number">0xF0</span>)&gt;&gt;<span class="number">4</span> | <span class="number">0x10</span>, OLED_CMD);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h4 id="三、程序设计"><a href="#三、程序设计" class="headerlink" title="三、程序设计"></a>三、程序设计</h4><h5 id="1-初始化"><a href="#1-初始化" class="headerlink" title="1.初始化"></a>1.初始化</h5><p>新建bsp_oled.c和bsp_oled.h文件，介绍均在代码注释中。</p>
+<p>bsp_oled.h:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">	OLED0.96                  							STM32</span></span><br><span class="line"><span class="comment">	GND        			&lt;-----------&gt;					GND</span></span><br><span class="line"><span class="comment">	VCC        			&lt;-----------&gt;					3.3V</span></span><br><span class="line"><span class="comment">	D0(SCLK)         	&lt;-----------&gt;					PA6			</span></span><br><span class="line"><span class="comment">	D1SDIN()         	&lt;-----------&gt;					PA7</span></span><br><span class="line"><span class="comment">	RES        			&lt;-----------&gt;					PA8</span></span><br><span class="line"><span class="comment">	DC(Data/Command)	&lt;-----------&gt;					PA11</span></span><br><span class="line"><span class="comment">	CS					&lt;-----------&gt;					PA12</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __BSP_OLED_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __BSP_OLED_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stm32f10x.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"bsp_SysTick.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//OLED端口配置</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_SCLK_Set()	GPIO_SetBits(GPIOA, GPIO_Pin_6)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_SCLK_Clr()	GPIO_ResetBits(GPIOA, GPIO_Pin_6)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_SDIN_Set()	GPIO_SetBits(GPIOA, GPIO_Pin_7)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_SDIN_Clr()	GPIO_ResetBits(GPIOA, GPIO_Pin_7)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_RST_Set() GPIO_SetBits(GPIOA, GPIO_Pin_8)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_RST_Clr() GPIO_ResetBits(GPIOA, GPIO_Pin_8)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_DC_Set()		GPIO_SetBits(GPIOA, GPIO_Pin_11)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_DC_Clr()		GPIO_ResetBits(GPIOA, GPIO_Pin_11)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_CS_Set() 	GPIO_SetBits(GPIOA, GPIO_Pin_12)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_CS_Clr() 	GPIO_ResetBits(GPIOA, GPIO_Pin_12)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_CMD	0 <span class="comment">//写命令</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OLED_DATA	1 <span class="comment">//写数据</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_Init</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_DrawBMP</span><span class="params">(<span class="type">unsigned</span> <span class="type">char</span> x0, <span class="type">unsigned</span> <span class="type">char</span> y0, <span class="type">unsigned</span> <span class="type">char</span> x1, <span class="type">unsigned</span> <span class="type">char</span> y1, <span class="type">unsigned</span> <span class="type">char</span> bmp[])</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>bsp_oled.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"bsp_oled.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//dat:要写入的数据/命令</span></span><br><span class="line"><span class="comment">//cmd：0表示命令，1表示数据</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_WR_Byte</span><span class="params">(<span class="type">unsigned</span> <span class="type">char</span> dat, <span class="type">unsigned</span> <span class="type">int</span> cmd)</span></span><br><span class="line">{</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> i;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(cmd)											<span class="comment">//判断是数据还是命令，1为数据，0为命令</span></span><br><span class="line">		OLED_DC_Set();</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		OLED_DC_Clr();</span><br><span class="line">	</span><br><span class="line">	OLED_CS_Clr();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++)					<span class="comment">//由芯片手册18页可得，数据在时钟上升沿被写入											 //先写高位</span></span><br><span class="line">	{</span><br><span class="line">		OLED_SCLK_Clr();</span><br><span class="line">		<span class="keyword">if</span>(dat &amp; <span class="number">0x80</span>)</span><br><span class="line">			OLED_SDIN_Set();</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			OLED_SDIN_Clr();</span><br><span class="line">		OLED_SCLK_Set();</span><br><span class="line">		</span><br><span class="line">		dat &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">	}</span><br><span class="line">	</span><br><span class="line">	OLED_CS_Set();</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_Clear</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> i, j;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++)</span><br><span class="line">	{</span><br><span class="line">		OLED_WR_Byte(<span class="number">0xb0</span> + i, OLED_CMD);  <span class="comment">//设置page地址</span></span><br><span class="line">		OLED_WR_Byte(<span class="number">0x00</span>, OLED_CMD);      <span class="comment">//设置列地址的低位</span></span><br><span class="line">		OLED_WR_Byte(<span class="number">0x10</span>, OLED_CMD);			 <span class="comment">//设置列地址的高位</span></span><br><span class="line">		<span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; <span class="number">128</span>; j++)</span><br><span class="line">			OLED_WR_Byte(<span class="number">0x0</span>, OLED_DATA);</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">//x:表示的列，分为（列低地址和列高地址）， y:表示的是page页编号(0~7)</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_Set_Pos</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> x, <span class="type">unsigned</span> <span class="type">int</span> y)</span></span><br><span class="line">{</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xb0</span> + y, OLED_CMD);</span><br><span class="line">	</span><br><span class="line">	OLED_WR_Byte((x&amp;<span class="number">0x0F</span>), OLED_CMD);		</span><br><span class="line">	OLED_WR_Byte((x&amp;<span class="number">0xF0</span>)&gt;&gt;<span class="number">4</span> | <span class="number">0x10</span>, OLED_CMD);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">//y0~y1的取值范围是0~7，x0~x1的取值范围是0~127</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_DrawBMP</span><span class="params">(<span class="type">unsigned</span> <span class="type">char</span> x0, <span class="type">unsigned</span> <span class="type">char</span> y0, <span class="type">unsigned</span> <span class="type">char</span> x1, <span class="type">unsigned</span> <span class="type">char</span> y1, <span class="type">unsigned</span> <span class="type">char</span> bmp[])</span></span><br><span class="line">{</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">char</span> x, y;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(y = y0; y &lt;= y1; y++)</span><br><span class="line">	{</span><br><span class="line">		OLED_Set_Pos(x0, y);</span><br><span class="line">		<span class="keyword">for</span>(x = x0; x &lt;= x1; x++)</span><br><span class="line">		{</span><br><span class="line">			OLED_WR_Byte(bmp[i++], OLED_DATA);</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">OLED_Init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">{</span><br><span class="line">    <span class="comment">//初始化GPIO</span></span><br><span class="line">	GPIO_InitTypeDef GPIO_InitStructure;</span><br><span class="line"></span><br><span class="line">	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);</span><br><span class="line">	</span><br><span class="line">	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_12;</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;</span><br><span class="line">	GPIO_Init(GPIOA, &amp;GPIO_InitStructure);</span><br><span class="line">	<span class="comment">//将管脚电平全部拉高</span></span><br><span class="line">	GPIO_SetBits(GPIOA, GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_12);</span><br><span class="line"><span class="comment">/**************************上电初始化************************************/</span>	</span><br><span class="line">    <span class="comment">//由芯片手册初始化时序图（手册27页Power ON and OFF sequence）得：</span></span><br><span class="line">    <span class="comment">//在上电时，需将RES管脚至少拉低3us后再拉高</span></span><br><span class="line">	OLED_RST_Set();				<span class="comment">//先将RES拉高</span></span><br><span class="line">	Delay_us(<span class="number">100000</span>);</span><br><span class="line">	OLED_RST_Clr();</span><br><span class="line">	Delay_us(<span class="number">20</span>);</span><br><span class="line">	OLED_RST_Set();</span><br><span class="line"><span class="comment">/**********指令初始化,具体可参考手册64页流程图****************/</span>	</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xA8</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x3F</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xD3</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x00</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x40</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xA1</span>, OLED_CMD);   <span class="comment">//A0/A1:控制屏幕显示左右映射翻转的</span></span><br><span class="line">	OLED_WR_Byte(<span class="number">0xC8</span>, OLED_CMD);   <span class="comment">//C0/C8：控制屏幕上下映射翻转的</span></span><br><span class="line">	OLED_WR_Byte(<span class="number">0xDA</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x12</span>, OLED_CMD);   <span class="comment">//02h:隔行显示  12h:逐行显示</span></span><br><span class="line">	OLED_WR_Byte(<span class="number">0x81</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x7F</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xA4</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xA6</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xD5</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x80</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x8D</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0x14</span>, OLED_CMD);</span><br><span class="line">	OLED_WR_Byte(<span class="number">0xAF</span>, OLED_CMD);</span><br><span class="line">	</span><br><span class="line">	OLED_Clear();</span><br><span class="line">	OLED_Set_Pos(<span class="number">0</span>, <span class="number">0</span>);					<span class="comment">//显示起始地址</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h5 id="2-在屏幕中显示特定内容"><a href="#2-在屏幕中显示特定内容" class="headerlink" title="2.在屏幕中显示特定内容"></a>2.在屏幕中显示特定内容</h5><p>新建bmp.h文件</p>
+<p>bmp.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __BMP_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __BMP_H__</span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> gImage_bless[] = {</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x10</span>,<span class="number">0x60</span>,<span class="number">0xC0</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x20</span>,<span class="number">0x20</span>,<span class="number">0x60</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x05</span>,<span class="number">0x07</span>,<span class="number">0xFE</span>,<span class="number">0x60</span>,</span><br><span class="line"><span class="number">0x18</span>,<span class="number">0x01</span>,<span class="number">0x87</span>,<span class="number">0xFC</span>,<span class="number">0xC2</span>,<span class="number">0x82</span>,<span class="number">0x82</span>,<span class="number">0xC2</span>,<span class="number">0x62</span>,<span class="number">0x7A</span>,<span class="number">0x0E</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0xC0</span>,<span class="number">0xBE</span>,<span class="number">0x80</span>,</span><br><span class="line"><span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0xC0</span>,<span class="number">0x40</span>,<span class="number">0x40</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x0F</span>,<span class="number">0x03</span>,<span class="number">0x01</span>,<span class="number">0x41</span>,<span class="number">0x41</span>,<span class="number">0xC1</span>,<span class="number">0x61</span>,<span class="number">0x69</span>,<span class="number">0x29</span>,<span class="number">0x2D</span>,<span class="number">0x05</span>,<span class="number">0x05</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x01</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xE0</span>,<span class="number">0x00</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x88</span>,<span class="number">0x88</span>,<span class="number">0x88</span>,<span class="number">0x88</span>,<span class="number">0x80</span>,<span class="number">0x88</span>,<span class="number">0x88</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,</span><br><span class="line"><span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0xF8</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x04</span>,<span class="number">0x0C</span>,<span class="number">0x08</span>,</span><br><span class="line"><span class="number">0x10</span>,<span class="number">0x30</span>,<span class="number">0x20</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xC0</span>,<span class="number">0x60</span>,<span class="number">0x38</span>,<span class="number">0x0E</span>,<span class="number">0x02</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0xC0</span>,<span class="number">0x60</span>,<span class="number">0x18</span>,<span class="number">0x06</span>,<span class="number">0x01</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xE0</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x02</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x81</span>,<span class="number">0xF9</span>,<span class="number">0x0F</span>,<span class="number">0x06</span>,<span class="number">0x1C</span>,</span><br><span class="line"><span class="number">0x30</span>,<span class="number">0xE0</span>,<span class="number">0x80</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0xC8</span>,<span class="number">0xCC</span>,<span class="number">0x64</span>,<span class="number">0x22</span>,<span class="number">0x13</span>,<span class="number">0x11</span>,<span class="number">0x13</span>,<span class="number">0xE6</span>,<span class="number">0xF8</span>,<span class="number">0x88</span>,<span class="number">0x8C</span>,<span class="number">0x00</span>,<span class="number">0x82</span>,<span class="number">0x02</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0x85</span>,<span class="number">0xFF</span>,<span class="number">0xB4</span>,<span class="number">0x64</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0xC0</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0xFD</span>,<span class="number">0x81</span>,</span><br><span class="line"><span class="number">0x40</span>,<span class="number">0x01</span>,<span class="number">0x41</span>,<span class="number">0x41</span>,<span class="number">0xC1</span>,<span class="number">0xF9</span>,<span class="number">0x61</span>,<span class="number">0x21</span>,<span class="number">0x21</span>,<span class="number">0x20</span>,<span class="number">0x20</span>,<span class="number">0x20</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x1C</span>,<span class="number">0x07</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x07</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,<span class="number">0x08</span>,</span><br><span class="line"><span class="number">0x08</span>,<span class="number">0x06</span>,<span class="number">0x03</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x06</span>,<span class="number">0x07</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0x06</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x02</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x3E</span>,<span class="number">0x44</span>,<span class="number">0x82</span>,<span class="number">0x83</span>,<span class="number">0xC1</span>,<span class="number">0x61</span>,<span class="number">0x1C</span>,<span class="number">0x07</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x04</span>,<span class="number">0x0F</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x07</span>,</span><br><span class="line"><span class="number">0x02</span>,<span class="number">0x0E</span>,<span class="number">0x18</span>,<span class="number">0x10</span>,<span class="number">0x20</span>,<span class="number">0x40</span>,<span class="number">0x7F</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xE0</span>,<span class="number">0x80</span>,<span class="number">0x70</span>,<span class="number">0x1E</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x38</span>,<span class="number">0x3C</span>,<span class="number">0x03</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0x04</span>,<span class="number">0x08</span>,<span class="number">0x10</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xF0</span>,<span class="number">0x10</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xC0</span>,<span class="number">0x3C</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xC0</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0xE0</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,</span><br><span class="line"><span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x81</span>,<span class="number">0x81</span>,<span class="number">0xC0</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x1F</span>,<span class="number">0xF0</span>,<span class="number">0x8C</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0xFF</span>,<span class="number">0x04</span>,<span class="number">0x00</span>,<span class="number">0x04</span>,<span class="number">0x04</span>,<span class="number">0x84</span>,<span class="number">0xC4</span>,<span class="number">0x64</span>,</span><br><span class="line"><span class="number">0x1C</span>,<span class="number">0x0C</span>,<span class="number">0xC0</span>,<span class="number">0x80</span>,<span class="number">0x40</span>,<span class="number">0x42</span>,<span class="number">0x01</span>,<span class="number">0xC0</span>,<span class="number">0xFE</span>,<span class="number">0xC0</span>,<span class="number">0x20</span>,<span class="number">0x30</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xF0</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0xA0</span>,<span class="number">0x3C</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0xC8</span>,<span class="number">0x38</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0xC0</span>,<span class="number">0x20</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x60</span>,<span class="number">0xE0</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x81</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0x80</span>,<span class="number">0x41</span>,<span class="number">0x62</span>,<span class="number">0x4E</span>,<span class="number">0x40</span>,<span class="number">0x40</span>,<span class="number">0x40</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0xF0</span>,<span class="number">0x0F</span>,<span class="number">0x01</span>,<span class="number">0x0C</span>,<span class="number">0x70</span>,<span class="number">0x80</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0xC0</span>,<span class="number">0x40</span>,</span><br><span class="line"><span class="number">0x40</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0xF1</span>,<span class="number">0x1F</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x10</span>,<span class="number">0x30</span>,<span class="number">0x0C</span>,<span class="number">0xFF</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0x0E</span>,<span class="number">0x04</span>,<span class="number">0x03</span>,<span class="number">0x00</span>,<span class="number">0x83</span>,</span><br><span class="line"><span class="number">0xFB</span>,<span class="number">0x07</span>,<span class="number">0x00</span>,<span class="number">0x08</span>,<span class="number">0x1A</span>,<span class="number">0x33</span>,<span class="number">0x60</span>,<span class="number">0xC0</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x1F</span>,<span class="number">0x04</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0xF8</span>,<span class="number">0x0F</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0x06</span>,<span class="number">0x0C</span>,<span class="number">0x01</span>,<span class="number">0xC1</span>,<span class="number">0x79</span>,<span class="number">0x07</span>,</span><br><span class="line"><span class="number">0x01</span>,<span class="number">0x02</span>,<span class="number">0x04</span>,<span class="number">0x08</span>,<span class="number">0x18</span>,<span class="number">0x30</span>,<span class="number">0x20</span>,<span class="number">0x60</span>,<span class="number">0x40</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0xF0</span>,<span class="number">0x03</span>,<span class="number">0x82</span>,<span class="number">0x82</span>,<span class="number">0x02</span>,<span class="number">0x02</span>,<span class="number">0x03</span>,<span class="number">0xFE</span>,<span class="number">0x02</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x38</span>,<span class="number">0xE0</span>,<span class="number">0x80</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x03</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x03</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x03</span>,<span class="number">0x02</span>,<span class="number">0x03</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x03</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0x02</span>,<span class="number">0x02</span>,<span class="number">0x03</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="comment">//二维数组，对应0~9的图片</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> number[][<span class="number">64</span>] = {</span><br><span class="line">{</span><br><span class="line"><span class="number">0xC0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xF8</span>,<span class="number">0xFC</span>,<span class="number">0x7E</span>,<span class="number">0x3E</span>,<span class="number">0x3E</span>,<span class="number">0x3E</span>,<span class="number">0x3E</span>,<span class="number">0x7E</span>,<span class="number">0xFC</span>,<span class="number">0xF8</span>,<span class="number">0xF0</span>,<span class="number">0xE0</span>,<span class="number">0xC0</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,</span><br><span class="line"><span class="number">0x07</span>,<span class="number">0x0F</span>,<span class="number">0x1F</span>,<span class="number">0x3F</span>,<span class="number">0x7E</span>,<span class="number">0xFC</span>,<span class="number">0xF8</span>,<span class="number">0xF8</span>,<span class="number">0xF8</span>,<span class="number">0xF8</span>,<span class="number">0xFC</span>,<span class="number">0x7E</span>,<span class="number">0x3F</span>,<span class="number">0x1F</span>,<span class="number">0x0F</span>,<span class="number">0x07</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x20</span>,<span class="number">0x30</span>,<span class="number">0x38</span>,<span class="number">0x38</span>,<span class="number">0xFE</span>,<span class="number">0xFE</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x3F</span>,<span class="number">0x3F</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0xF0</span>,<span class="number">0xFC</span>,<span class="number">0xFE</span>,<span class="number">0x3F</span>,<span class="number">0x0F</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x0F</span>,<span class="number">0xFF</span>,<span class="number">0xFE</span>,<span class="number">0xFC</span>,<span class="number">0xF0</span>,</span><br><span class="line"><span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xC0</span>,<span class="number">0xE0</span>,<span class="number">0xF8</span>,<span class="number">0xFC</span>,<span class="number">0x7F</span>,<span class="number">0x3F</span>,<span class="number">0x0F</span>,<span class="number">0x07</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x80</span>,<span class="number">0xE0</span>,<span class="number">0xF8</span>,<span class="number">0xFE</span>,<span class="number">0x7F</span>,<span class="number">0x1F</span>,<span class="number">0x07</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0xF8</span>,<span class="number">0xFC</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xEF</span>,<span class="number">0xE1</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0xF0</span>,<span class="number">0xF8</span>,<span class="number">0x7C</span>,<span class="number">0x3E</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x9F</span>,<span class="number">0xFF</span>,<span class="number">0xFE</span>,<span class="number">0xFC</span>,</span><br><span class="line"><span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xC0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xF8</span>,<span class="number">0x3F</span>,<span class="number">0x1F</span>,<span class="number">0x0F</span>,<span class="number">0x07</span>,<span class="number">0x03</span>,</span><br><span class="line"><span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x03</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x1F</span>,<span class="number">0xFF</span>,<span class="number">0xFE</span>,<span class="number">0xFC</span>,<span class="number">0xF8</span>,<span class="number">0xF0</span>,</span><br><span class="line"><span class="number">0x0F</span>,<span class="number">0x1F</span>,<span class="number">0x7E</span>,<span class="number">0xFC</span>,<span class="number">0xF8</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xF9</span>,<span class="number">0xFF</span>,<span class="number">0x7F</span>,<span class="number">0x3F</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,</span><br><span class="line"><span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,<span class="number">0x1C</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xC0</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x80</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,</span><br><span class="line"><span class="number">0x3F</span>,<span class="number">0x7F</span>,<span class="number">0xFF</span>,<span class="number">0xF8</span>,<span class="number">0xF0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xFF</span>,<span class="number">0x7F</span>,<span class="number">0x3F</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0xFC</span>,<span class="number">0xFE</span>,<span class="number">0xFF</span>,<span class="number">0x3F</span>,<span class="number">0x1F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x3F</span>,<span class="number">0x3E</span>,<span class="number">0x1C</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xC0</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,</span><br><span class="line"><span class="number">0x3F</span>,<span class="number">0x7F</span>,<span class="number">0xFF</span>,<span class="number">0xF8</span>,<span class="number">0xF0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xFF</span>,<span class="number">0x7F</span>,<span class="number">0x3F</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0x07</span>,<span class="number">0xE7</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x7F</span>,<span class="number">0x1F</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xC0</span>,<span class="number">0xE0</span>,<span class="number">0xF8</span>,<span class="number">0x7C</span>,<span class="number">0x3F</span>,<span class="number">0x0F</span>,<span class="number">0x03</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0xFC</span>,<span class="number">0xFE</span>,<span class="number">0xFF</span>,<span class="number">0x3F</span>,<span class="number">0x1F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x1F</span>,<span class="number">0x3F</span>,<span class="number">0xFF</span>,<span class="number">0xFE</span>,<span class="number">0xFC</span>,</span><br><span class="line"><span class="number">0x0F</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xF0</span>,<span class="number">0xE0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x0F</span>,</span><br><span class="line"><span class="number">0xFE</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0x0F</span>,<span class="number">0x07</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x07</span>,<span class="number">0x0F</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFE</span>,</span><br><span class="line"><span class="number">0x3F</span>,<span class="number">0x7F</span>,<span class="number">0xFF</span>,<span class="number">0xF8</span>,<span class="number">0xF0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xFF</span>,<span class="number">0x7F</span>,<span class="number">0x3F</span>,</span><br><span class="line">},</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line"><span class="number">0xFC</span>,<span class="number">0xFE</span>,<span class="number">0xFF</span>,<span class="number">0x3F</span>,<span class="number">0x1F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x0F</span>,<span class="number">0x1F</span>,<span class="number">0x3F</span>,<span class="number">0xFF</span>,<span class="number">0xFE</span>,<span class="number">0xFC</span>,</span><br><span class="line"><span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xF0</span>,<span class="number">0xE0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xC0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,</span><br><span class="line"><span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x03</span>,<span class="number">0x07</span>,<span class="number">0x0F</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,<span class="number">0xFF</span>,</span><br><span class="line"><span class="number">0x38</span>,<span class="number">0x78</span>,<span class="number">0xF8</span>,<span class="number">0xF8</span>,<span class="number">0xF0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xE0</span>,<span class="number">0xF0</span>,<span class="number">0xF8</span>,<span class="number">0xFF</span>,<span class="number">0x7F</span>,<span class="number">0x3F</span>,</span><br><span class="line">}</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>该数组可由取模软件，具体操作方法自行百度。</p>
+<p>字模配置如下图：</p>
+<p><img src="https://pica.zhimg.com/80/v2-1eb5d86904def1b4423af06ff2840fff_1440w.png" alt=""></p>
+<p>今天介绍的只是一些皮毛而已，如果想要深入学习可在网上自行学习。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>原创技术分享，您的支持将鼓励我继续创作</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="ChaoJ 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="ChaoJ 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ChaoJ
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://chaoj.com.cn/2022/07/14/%E5%B5%8C%E5%85%A5%E5%BC%8F/stm32/oled/" title="OLED详解">https://chaoj.com.cn/2022/07/14/嵌入式/stm32/oled/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/stm32/" rel="tag"># stm32</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/08/%E5%B5%8C%E5%85%A5%E5%BC%8F/esp32/esp32%E9%85%8D%E7%BD%AEarduino%E7%8E%AF%E5%A2%83/" rel="prev" title="esp32-arduino环境配置">
+      <i class="fa fa-chevron-left"></i> esp32-arduino环境配置
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NjAxMy8zMjQ3Ng"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81OLED%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、OLED简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%810-96%E5%AF%B8OLED%E5%B1%8F%E5%B9%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">二、0.96寸OLED屏幕介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E7%AE%A1%E8%84%9A%E5%AE%9A%E4%B9%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.管脚定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%B1%8F%E5%B9%95%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.3.</span> <span class="nav-text">3.屏幕原理介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.3.1.</span> <span class="nav-text">重要函数介绍</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">三、程序设计</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.1.</span> <span class="nav-text">1.初始化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%9C%A8%E5%B1%8F%E5%B9%95%E4%B8%AD%E6%98%BE%E7%A4%BA%E7%89%B9%E5%AE%9A%E5%86%85%E5%AE%B9"><span class="nav-number">3.2.</span> <span class="nav-text">2.在屏幕中显示特定内容</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ChaoJ"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">ChaoJ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; Sun Apr 03 2022 08:00:00 GMT+0800 (GMT+08:00) – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ChaoJ</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">45k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">40 分钟</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>-->
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共12.2k字</span>
+</div>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
