@@ -22,19 +22,23 @@
     var CONFIG = {"hostname":"chaoj.com.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="经过不懈的努力终于将博客搭好了。在搭的过程中遇到了许多坑，不过最终还是成功了。在此记录一下。">
+  <meta name="description" content="IP数据报格式简介">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Myfirst article">
-<meta property="og:url" content="https://chaoj.com.cn/2022/05/02/first/index.html">
+<meta property="og:title" content="IP数据报格式">
+<meta property="og:url" content="https://chaoj.com.cn/2022/10/04/%E5%86%85%E5%8A%9F/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E6%96%B0%E5%BB%BA%E6%96%87%E6%9C%AC%E6%96%87%E6%A1%A3/index.html">
 <meta property="og:site_name" content="ChaoJ的个人博客">
-<meta property="og:description" content="经过不懈的努力终于将博客搭好了。在搭的过程中遇到了许多坑，不过最终还是成功了。在此记录一下。">
+<meta property="og:description" content="IP数据报格式简介">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-05-02T12:44:10.747Z">
-<meta property="article:modified_time" content="2022-04-08T05:40:50.407Z">
+<meta property="og:image" content="https://pica.zhimg.com/80/v2-bd5c10ab37392508798058a4baf9ba22_1440w.png">
+<meta property="og:image" content="https://picx.zhimg.com/80/v2-d18503685528b76ba1aac6e2c72343b6_1440w.png">
+<meta property="article:published_time" content="2022-10-04T09:15:16.000Z">
+<meta property="article:modified_time" content="2022-10-04T09:51:23.736Z">
 <meta property="article:author" content="ChaoJ">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pica.zhimg.com/80/v2-bd5c10ab37392508798058a4baf9ba22_1440w.png">
 
-<link rel="canonical" href="https://chaoj.com.cn/2022/05/02/first/">
+<link rel="canonical" href="https://chaoj.com.cn/2022/10/04/%E5%86%85%E5%8A%9F/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E6%96%B0%E5%BB%BA%E6%96%87%E6%9C%AC%E6%96%87%E6%A1%A3/">
 
 
 <script id="page-configurations">
@@ -47,7 +51,7 @@
   };
 </script>
 
-  <title>Myfirst article | ChaoJ的个人博客</title>
+  <title>IP数据报格式 | ChaoJ的个人博客</title>
   
 
 
@@ -78,7 +82,119 @@
   </style>
 </noscript>
 
-</head>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -168,7 +284,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/05/02/first/">
+    <link itemprop="mainEntityOfPage" href="https://chaoj.com.cn/2022/10/04/%E5%86%85%E5%8A%9F/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E6%96%B0%E5%BB%BA%E6%96%87%E6%9C%AC%E6%96%87%E6%A1%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -181,7 +297,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Myfirst article
+          IP数据报格式
         </h1>
 
         <div class="post-meta">
@@ -190,16 +306,23 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-05-02 20:44:10" itemprop="dateCreated datePublished" datetime="2022-05-02T20:44:10+08:00">2022-05-02</time>
+              <time title="创建时间：2022-10-04 17:15:16 / 修改时间：17:51:23" itemprop="dateCreated datePublished" datetime="2022-10-04T17:15:16+08:00">2022-10-04</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-04-08 13:40:50" itemprop="dateModified" datetime="2022-04-08T13:40:50+08:00">2022-04-08</time>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
               </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%86%85%E5%8A%9F/" itemprop="url" rel="index"><span itemprop="name">内功</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%86%85%E5%8A%9F/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
 
           
             <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
@@ -214,7 +337,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>46</span>
+              <span>820</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -223,6 +346,7 @@
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               <span>1 分钟</span>
             </span>
+            <div class="post-description">IP数据报格式简介</div>
 
         </div>
       </header>
@@ -233,7 +357,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>经过不懈的努力终于将博客搭好了。在搭的过程中遇到了许多坑，不过最终还是成功了。在此记录一下。</p>
+        <p><img src="https://pica.zhimg.com/80/v2-bd5c10ab37392508798058a4baf9ba22_1440w.png" alt=""></p>
+<p>如图每行有<strong>32</strong>位。接下来一一分析：</p>
+<h5 id="1、版本"><a href="#1、版本" class="headerlink" title="1、版本"></a>1、版本</h5><p>4位，主要看是IPv4 还是IPv6。</p>
+<h5 id="2、首部长度"><a href="#2、首部长度" class="headerlink" title="2、首部长度"></a>2、首部长度</h5><p>4位，单位为<strong>4B</strong>，最小为<strong>5</strong>。表示首部的长度。</p>
+<h5 id="3、区分服务"><a href="#3、区分服务" class="headerlink" title="3、区分服务"></a>3、区分服务</h5><p>8位，指期望获得哪种服务。</p>
+<h5 id="4、总长度"><a href="#4、总长度" class="headerlink" title="4、总长度"></a>4、总长度</h5><p>16位，单位为<strong>1B</strong>，表示<strong>首部 + 数据部分</strong>的总长度。</p>
+<h5 id="5、标识"><a href="#5、标识" class="headerlink" title="5、标识"></a>5、标识</h5><p>16位，表示分片的分组。同一数据报的分片有同一的标识。</p>
+<h5 id="6、-标志"><a href="#6、-标志" class="headerlink" title="6、 标志"></a>6、 标志</h5><p>3位，只有两位有意义，<strong>x _ _</strong>,其中:</p>
+<ul>
+<li>中间位为<strong>DF (Don’t Fragment)</strong>: DF = 1, 禁止分片</li>
+</ul>
+<p>​                                                           DF = 0，允许分片</p>
+<ul>
+<li><p>末位为<strong>MF（More Fragment）</strong>: MF = 1, 该分片后面还有分片</p>
+<p>​                                                         MF = 0, 该分片后面没有分片</p>
+</li>
+</ul>
+<h5 id="7、片偏移"><a href="#7、片偏移" class="headerlink" title="7、片偏移"></a>7、片偏移</h5><p>13位，单位<strong>8B</strong>，表示该分片在原分片中的偏移。</p>
+<h5 id="8、生存时间"><a href="#8、生存时间" class="headerlink" title="8、生存时间"></a>8、生存时间</h5><p>生存时间字段用来标识IP数据报在网络中传输的有效期，以秒来计数，占8位。最初的设计是以秒为单位，没经过一个路由器时，就在TTL（Time To Live）中减去数据报在路由器消耗掉的一段时间。若数据报在路由器消耗的时间小于1s，就把TTL值减1。TTL的建议值是32s，最长是28−1=255s。现在通常认为这个TTL是指数据报允许经过的路由器数，每经过一个路由器，则TTL减1，当TTL值为0时，就丢弃这个数据报。设定生存时间是为了防止数据报在网络中无限制地循环转发</p>
+<h5 id="9、协议"><a href="#9、协议" class="headerlink" title="9、协议"></a>9、协议</h5><p><img src="https://picx.zhimg.com/80/v2-d18503685528b76ba1aac6e2c72343b6_1440w.png" alt=""></p>
+<p>数据部分的协议。</p>
+<h5 id="10、首部校验和"><a href="#10、首部校验和" class="headerlink" title="10、首部校验和"></a>10、首部校验和</h5><p>只检验首部</p>
+<h5 id="11、源地址和目标地址"><a href="#11、源地址和目标地址" class="headerlink" title="11、源地址和目标地址"></a>11、源地址和目标地址</h5><p>32位，即IP地址。在这个数据报传送过程中，无论经过什么路由，无论如何分段，此两字段一直保持不变。</p>
+<h5 id="12、选项"><a href="#12、选项" class="headerlink" title="12、选项"></a>12、选项</h5><p>选项字段支持各种选项，提供扩展余地。根据选项的不同，该字段时可变长，从1字节到40字节。用来支持拍错、测量以及安全等措施。作为选项，用户可以使用，也可以不使用它们。但作为IP协议的组成部分，所有实现IP协议的设备都必须能处理IP选项。在使用选项的过程中，如果造成了IP数据报的报头不是32位的整数倍，这时需要后面的填充字段凑齐。如果恰好是整数倍，则不需要填充字段。</p>
+<h5 id="13、填充字段"><a href="#13、填充字段" class="headerlink" title="13、填充字段"></a>13、填充字段</h5><p>全为0，使首部总长度为4B的倍数。</p>
 
     </div>
 
@@ -269,7 +417,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://chaoj.com.cn/2022/05/02/first/" title="Myfirst article">https://chaoj.com.cn/2022/05/02/first/</a>
+    <a href="https://chaoj.com.cn/2022/10/04/%E5%86%85%E5%8A%9F/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E6%96%B0%E5%BB%BA%E6%96%87%E6%9C%AC%E6%96%87%E6%A1%A3/" title="IP数据报格式">https://chaoj.com.cn/2022/10/04/内功/计算机网络/新建文本文档/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -279,6 +427,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
 
         
 
@@ -286,13 +437,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/04/04/hello-world/" rel="prev" title="Hello World">
-      <i class="fa fa-chevron-left"></i> Hello World
+    <a href="/2022/08/28/%E5%B5%8C%E5%85%A5%E5%BC%8F/ucosIII/%E8%BD%AF%E4%BB%B6%E5%AE%9A%E6%97%B6%E5%99%A8/" rel="prev" title="软件定时器">
+      <i class="fa fa-chevron-left"></i> 软件定时器
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/05/03/%E7%AE%97%E6%B3%95/%E5%9B%BE%E8%AE%BA/%E6%9C%80%E7%9F%AD%E8%B7%AF/" rel="next" title="图论--最短路">
-      图论--最短路 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -355,6 +503,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1%E3%80%81%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">1、版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2%E3%80%81%E9%A6%96%E9%83%A8%E9%95%BF%E5%BA%A6"><span class="nav-number">2.</span> <span class="nav-text">2、首部长度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3%E3%80%81%E5%8C%BA%E5%88%86%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.</span> <span class="nav-text">3、区分服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4%E3%80%81%E6%80%BB%E9%95%BF%E5%BA%A6"><span class="nav-number">4.</span> <span class="nav-text">4、总长度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5%E3%80%81%E6%A0%87%E8%AF%86"><span class="nav-number">5.</span> <span class="nav-text">5、标识</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6%E3%80%81-%E6%A0%87%E5%BF%97"><span class="nav-number">6.</span> <span class="nav-text">6、 标志</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7%E3%80%81%E7%89%87%E5%81%8F%E7%A7%BB"><span class="nav-number">7.</span> <span class="nav-text">7、片偏移</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8%E3%80%81%E7%94%9F%E5%AD%98%E6%97%B6%E9%97%B4"><span class="nav-number">8.</span> <span class="nav-text">8、生存时间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9%E3%80%81%E5%8D%8F%E8%AE%AE"><span class="nav-number">9.</span> <span class="nav-text">9、协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10%E3%80%81%E9%A6%96%E9%83%A8%E6%A0%A1%E9%AA%8C%E5%92%8C"><span class="nav-number">10.</span> <span class="nav-text">10、首部校验和</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11%E3%80%81%E6%BA%90%E5%9C%B0%E5%9D%80%E5%92%8C%E7%9B%AE%E6%A0%87%E5%9C%B0%E5%9D%80"><span class="nav-number">11.</span> <span class="nav-text">11、源地址和目标地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#12%E3%80%81%E9%80%89%E9%A1%B9"><span class="nav-number">12.</span> <span class="nav-text">12、选项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#13%E3%80%81%E5%A1%AB%E5%85%85%E5%AD%97%E6%AE%B5"><span class="nav-number">13.</span> <span class="nav-text">13、填充字段</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -537,6 +686,61 @@ $(document).ready(function() {
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
